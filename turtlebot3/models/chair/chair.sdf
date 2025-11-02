@@ -4,157 +4,155 @@
     <static>false</static>
     <pose>0 0 0 0 0 0</pose>
 
-    <!-- ========== SCALE FACTOR ========== -->
-    <!-- Change this one value to resize the entire chair -->
-    <!-- Example: 0.5 = small, 1.0 = normal, 1.5 = large -->
-    <plugin name="scale_plugin" filename="libgazebo_ros_factory.so">
-      <ros>
-        <namespace>/</namespace>
-      </ros>
-      <scale>0.5</scale> <!-- 🔹 Change this value -->
-    </plugin>
-
-    <!-- ========== SEAT ========== -->
+    <!-- ========== SEAT (Half Size) ========== -->
     <link name="seat">
-      <pose>0 0 0.45 0 0 0</pose>
+      <pose>0 0 0.225 0 0 0</pose> <!-- Height: 0.45 → 0.225 -->
       <inertial>
-        <mass>5.0</mass>
+        <mass>2.5</mass> <!-- Mass: 5.0 → 2.5 -->
       </inertial>
       <collision name="seat_collision">
         <geometry>
           <box>
-            <size>0.45 0.45 0.05</size>
+            <size>0.225 0.225 0.025</size> <!-- Size: 0.45×0.45×0.05 → 0.225×0.225×0.025 -->
           </box>
         </geometry>
       </collision>
       <visual name="seat_visual">
         <geometry>
           <box>
-            <size>0.45 0.45 0.05</size>
+            <size>0.225 0.225 0.025</size> <!-- Same as collision -->
           </box>
         </geometry>
         <material>
           <ambient>0.6 0.4 0.2 1</ambient>
           <diffuse>0.6 0.4 0.2 1</diffuse>
         </material>
-        <!-- Apply scaling -->
-        <scale>1.5 1.5 1.5</scale>
       </visual>
     </link>
 
-    <!-- ========== BACKREST ========== -->
+    <!-- ========== BACKREST (Half Size) ========== -->
     <link name="backrest">
-      <pose>0 -0.2 0.75 0 0 0</pose>
+      <pose>0 -0.1 0.375 0 0 0</pose> <!-- Y: -0.2 → -0.1, Z: 0.75 → 0.375 -->
       <inertial>
-        <mass>3.0</mass>
+        <mass>1.5</mass> <!-- Mass: 3.0 → 1.5 -->
       </inertial>
       <collision name="backrest_collision">
         <geometry>
           <box>
-            <size>0.45 0.05 0.6</size>
+            <size>0.225 0.025 0.3</size> <!-- Size: 0.45×0.05×0.6 → 0.225×0.025×0.3 -->
           </box>
         </geometry>
       </collision>
       <visual name="backrest_visual">
         <geometry>
           <box>
-            <size>0.45 0.05 0.6</size>
+            <size>0.225 0.025 0.3</size> <!-- Same as collision -->
           </box>
         </geometry>
         <material>
           <ambient>0.6 0.4 0.2 1</ambient>
           <diffuse>0.6 0.4 0.2 1</diffuse>
         </material>
-        <scale>1.5 1.5 1.5</scale>
       </visual>
     </link>
 
-    <!-- ========== LEGS ========== -->
+    <!-- ========== FRONT LEFT LEG (Half Size) ========== -->
     <link name="front_left_leg">
-      <pose>0.175 0.175 0.225 0 0 0</pose>
+      <pose>0.0875 0.0875 0.1125 0 0 0</pose> <!-- Position: 0.175×0.175×0.225 → 0.0875×0.0875×0.1125 -->
       <collision name="front_left_leg_collision">
         <geometry>
           <cylinder>
-            <radius>0.025</radius>
-            <length>0.45</length>
+            <radius>0.0125</radius> <!-- Radius: 0.025 → 0.0125 -->
+            <length>0.225</length> <!-- Length: 0.45 → 0.225 -->
           </cylinder>
         </geometry>
       </collision>
       <visual name="front_left_leg_visual">
         <geometry>
           <cylinder>
-            <radius>0.025</radius>
-            <length>0.45</length>
+            <radius>0.0125</radius>
+            <length>0.225</length>
           </cylinder>
         </geometry>
         <material>
           <ambient>0.5 0.3 0.1 1</ambient>
           <diffuse>0.5 0.3 0.1 1</diffuse>
         </material>
-        <scale>1.5 1.5 1.5</scale>
       </visual>
     </link>
 
+    <!-- ========== FRONT RIGHT LEG (Half Size) ========== -->
     <link name="front_right_leg">
-      <pose>-0.175 0.175 0.225 0 0 0</pose>
+      <pose>-0.0875 0.0875 0.1125 0 0 0</pose> <!-- X: -0.175 → -0.0875 -->
       <collision name="front_right_leg_collision">
         <geometry>
           <cylinder>
-            <radius>0.025</radius>
-            <length>0.45</length>
+            <radius>0.0125</radius>
+            <length>0.225</length>
           </cylinder>
         </geometry>
       </collision>
       <visual name="front_right_leg_visual">
         <geometry>
           <cylinder>
-            <radius>0.025</radius>
-            <length>0.45</length>
+            <radius>0.0125</radius>
+            <length>0.225</length>
           </cylinder>
         </geometry>
-        <scale>1.5 1.5 1.5</scale>
+        <material>
+          <ambient>0.5 0.3 0.1 1</ambient>
+          <diffuse>0.5 0.3 0.1 1</diffuse>
+        </material>
       </visual>
     </link>
 
+    <!-- ========== BACK LEFT LEG (Half Size) ========== -->
     <link name="back_left_leg">
-      <pose>0.175 -0.175 0.225 0 0 0</pose>
+      <pose>0.0875 -0.0875 0.1125 0 0 0</pose> <!-- Y: -0.175 → -0.0875 -->
       <collision name="back_left_leg_collision">
         <geometry>
           <cylinder>
-            <radius>0.025</radius>
-            <length>0.45</length>
+            <radius>0.0125</radius>
+            <length>0.225</length>
           </cylinder>
         </geometry>
       </collision>
       <visual name="back_left_leg_visual">
         <geometry>
           <cylinder>
-            <radius>0.025</radius>
-            <length>0.45</length>
+            <radius>0.0125</radius>
+            <length>0.225</length>
           </cylinder>
         </geometry>
-        <scale>1.5 1.5 1.5</scale>
+        <material>
+          <ambient>0.5 0.3 0.1 1</ambient>
+          <diffuse>0.5 0.3 0.1 1</diffuse>
+        </material>
       </visual>
     </link>
 
+    <!-- ========== BACK RIGHT LEG (Half Size) ========== -->
     <link name="back_right_leg">
-      <pose>-0.175 -0.175 0.225 0 0 0</pose>
+      <pose>-0.0875 -0.0875 0.1125 0 0 0</pose> <!-- Both X,Y: ±0.175 → ±0.0875 -->
       <collision name="back_right_leg_collision">
         <geometry>
           <cylinder>
-            <radius>0.025</radius>
-            <length>0.45</length>
+            <radius>0.0125</radius>
+            <length>0.225</length>
           </cylinder>
         </geometry>
       </collision>
       <visual name="back_right_leg_visual">
         <geometry>
           <cylinder>
-            <radius>0.025</radius>
-            <length>0.45</length>
+            <radius>0.0125</radius>
+            <length>0.225</length>
           </cylinder>
         </geometry>
-        <scale>1.5 1.5 1.5</scale>
+        <material>
+          <ambient>0.5 0.3 0.1 1</ambient>
+          <diffuse>0.5 0.3 0.1 1</diffuse>
+        </material>
       </visual>
     </link>
 

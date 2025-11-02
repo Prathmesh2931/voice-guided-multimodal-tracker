@@ -43,6 +43,7 @@ class EnhancedYOLOTracker(Node):
         self.detection_pub = self.create_publisher(Bool, '/object_detected', 10)
         self.distance_pub = self.create_publisher(Float32, '/object_distance', 10)
         self.state_pub = self.create_publisher(String, '/robot_state', 10)  # NEW: State publisher
+        self.detection_image_pub = self.create_publisher(Image, '/detection_image', qos_profile)
         
         # State variables
         self.rgb_image = None
@@ -60,9 +61,9 @@ class EnhancedYOLOTracker(Node):
         self.object_distance = float('inf')
         self.object_position = [0, 0]
         self.detection_confidence = 0.0
-        self.min_confidence = 0.5
+        self.min_confidence = 0.1
         self.target_distance = 0.2  # Target following distance in meters
-        self.dist_target_tolerance = 0.1  # INCREASED tolerance from 0.1 to 0.3
+        self.dist_target_tolerance = 0.05  # INCREASED tolerance from 0.1 to 0.3
         
         # Movement parameters (adjusted for better control)
         self.max_linear_speed = 0.25
@@ -215,7 +216,43 @@ class EnhancedYOLOTracker(Node):
             self.detect_yolo_objects()
         elif self.tracking_mode == "color":
             self.detect_color_objects()
-    
+
+        self.publish_detection_image()
+
+    def publish_detection_image(self):
+        """Publish annotated image with bounding boxes and confidence"""
+        if self.rgb_image is None:
+            return
+        
+        try:
+            # Create a copy for annotation
+            annotated_image = self.rgb_image.copy()
+            
+            # Add crosshair at center
+            h, w = annotated_image.shape[:2]
+            center_x, center_y = w // 2, h // 2
+            cv2.line(annotated_image, (center_x - 20, center_y), (center_x + 20, center_y), (255, 255, 255), 2)
+            cv2.line(annotated_image, (center_x, center_y - 20), (center_x, center_y + 20), (255, 255, 255), 2)
+            
+            # Add status overlay
+            status_text = f"Target: {self.target_object} | Mode: {self.tracking_mode} | State: {self.current_state}"
+            cv2.putText(annotated_image, status_text, (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 255, 255), 2)
+            
+            if self.object_detected:
+                # Add detection info
+                detection_text = f"Confidence: {self.detection_confidence:.2f} | Distance: {self.object_distance:.2f}m"
+                cv2.putText(annotated_image, detection_text, (10, 60), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 0), 2)
+                
+                # Add target circle at object center
+                cv2.circle(annotated_image, (int(self.object_position[0]), int(self.object_position[1])), 10, (0, 0, 255), 3)
+            
+            # Publish annotated image
+            detection_msg = self.bridge.cv2_to_imgmsg(annotated_image, "bgr8")
+            self.detection_image_pub.publish(detection_msg)
+            
+        except Exception as e:
+            self.get_logger().error(f'❌ Image publishing error: {e}')
+        
     def detect_yolo_objects(self):
         """YOLO-based object detection"""
         try:

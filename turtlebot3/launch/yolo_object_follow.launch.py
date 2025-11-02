@@ -143,7 +143,7 @@ def generate_launch_description():
                     "models","chair" ,"chair.sdf"]),
             '-allow_renaming', 'true',
             '-x', '-1.3',
-            '-y', '0.4',
+            '-y', '0.8',
             '-z', '0.1'],
     )
     
