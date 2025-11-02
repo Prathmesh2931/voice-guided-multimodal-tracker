@@ -1,0 +1,187 @@
+<?xml version="1.0" ?>
+<sdf version="1.9">
+  <model name="chair">
+    <static>false</static>
+    <pose>0 0 0 0 0 0</pose>
+
+    <!-- ========== SCALE FACTOR ========== -->
+    <!-- Change this one value to resize the entire chair -->
+    <!-- Example: 0.5 = small, 1.0 = normal, 1.5 = large -->
+    <plugin name="scale_plugin" filename="libgazebo_ros_factory.so">
+      <ros>
+        <namespace>/</namespace>
+      </ros>
+      <scale>0.5</scale> <!-- 🔹 Change this value -->
+    </plugin>
+
+    <!-- ========== SEAT ========== -->
+    <link name="seat">
+      <pose>0 0 0.45 0 0 0</pose>
+      <inertial>
+        <mass>5.0</mass>
+      </inertial>
+      <collision name="seat_collision">
+        <geometry>
+          <box>
+            <size>0.45 0.45 0.05</size>
+          </box>
+        </geometry>
+      </collision>
+      <visual name="seat_visual">
+        <geometry>
+          <box>
+            <size>0.45 0.45 0.05</size>
+          </box>
+        </geometry>
+        <material>
+          <ambient>0.6 0.4 0.2 1</ambient>
+          <diffuse>0.6 0.4 0.2 1</diffuse>
+        </material>
+        <!-- Apply scaling -->
+        <scale>1.5 1.5 1.5</scale>
+      </visual>
+    </link>
+
+    <!-- ========== BACKREST ========== -->
+    <link name="backrest">
+      <pose>0 -0.2 0.75 0 0 0</pose>
+      <inertial>
+        <mass>3.0</mass>
+      </inertial>
+      <collision name="backrest_collision">
+        <geometry>
+          <box>
+            <size>0.45 0.05 0.6</size>
+          </box>
+        </geometry>
+      </collision>
+      <visual name="backrest_visual">
+        <geometry>
+          <box>
+            <size>0.45 0.05 0.6</size>
+          </box>
+        </geometry>
+        <material>
+          <ambient>0.6 0.4 0.2 1</ambient>
+          <diffuse>0.6 0.4 0.2 1</diffuse>
+        </material>
+        <scale>1.5 1.5 1.5</scale>
+      </visual>
+    </link>
+
+    <!-- ========== LEGS ========== -->
+    <link name="front_left_leg">
+      <pose>0.175 0.175 0.225 0 0 0</pose>
+      <collision name="front_left_leg_collision">
+        <geometry>
+          <cylinder>
+            <radius>0.025</radius>
+            <length>0.45</length>
+          </cylinder>
+        </geometry>
+      </collision>
+      <visual name="front_left_leg_visual">
+        <geometry>
+          <cylinder>
+            <radius>0.025</radius>
+            <length>0.45</length>
+          </cylinder>
+        </geometry>
+        <material>
+          <ambient>0.5 0.3 0.1 1</ambient>
+          <diffuse>0.5 0.3 0.1 1</diffuse>
+        </material>
+        <scale>1.5 1.5 1.5</scale>
+      </visual>
+    </link>
+
+    <link name="front_right_leg">
+      <pose>-0.175 0.175 0.225 0 0 0</pose>
+      <collision name="front_right_leg_collision">
+        <geometry>
+          <cylinder>
+            <radius>0.025</radius>
+            <length>0.45</length>
+          </cylinder>
+        </geometry>
+      </collision>
+      <visual name="front_right_leg_visual">
+        <geometry>
+          <cylinder>
+            <radius>0.025</radius>
+            <length>0.45</length>
+          </cylinder>
+        </geometry>
+        <scale>1.5 1.5 1.5</scale>
+      </visual>
+    </link>
+
+    <link name="back_left_leg">
+      <pose>0.175 -0.175 0.225 0 0 0</pose>
+      <collision name="back_left_leg_collision">
+        <geometry>
+          <cylinder>
+            <radius>0.025</radius>
+            <length>0.45</length>
+          </cylinder>
+        </geometry>
+      </collision>
+      <visual name="back_left_leg_visual">
+        <geometry>
+          <cylinder>
+            <radius>0.025</radius>
+            <length>0.45</length>
+          </cylinder>
+        </geometry>
+        <scale>1.5 1.5 1.5</scale>
+      </visual>
+    </link>
+
+    <link name="back_right_leg">
+      <pose>-0.175 -0.175 0.225 0 0 0</pose>
+      <collision name="back_right_leg_collision">
+        <geometry>
+          <cylinder>
+            <radius>0.025</radius>
+            <length>0.45</length>
+          </cylinder>
+        </geometry>
+      </collision>
+      <visual name="back_right_leg_visual">
+        <geometry>
+          <cylinder>
+            <radius>0.025</radius>
+            <length>0.45</length>
+          </cylinder>
+        </geometry>
+        <scale>1.5 1.5 1.5</scale>
+      </visual>
+    </link>
+
+    <!-- ========== FIXED JOINTS ========== -->
+    <joint name="seat_to_front_left_leg" type="fixed">
+      <parent>seat</parent>
+      <child>front_left_leg</child>
+    </joint>
+
+    <joint name="seat_to_front_right_leg" type="fixed">
+      <parent>seat</parent>
+      <child>front_right_leg</child>
+    </joint>
+
+    <joint name="seat_to_back_left_leg" type="fixed">
+      <parent>seat</parent>
+      <child>back_left_leg</child>
+    </joint>
+
+    <joint name="seat_to_back_right_leg" type="fixed">
+      <parent>seat</parent>
+      <child>back_right_leg</child>
+    </joint>
+
+    <joint name="seat_to_backrest" type="fixed">
+      <parent>seat</parent>
+      <child>backrest</child>
+    </joint>
+  </model>
+</sdf>

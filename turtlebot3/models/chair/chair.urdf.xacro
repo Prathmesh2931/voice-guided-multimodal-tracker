@@ -1,0 +1,152 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="chair">
+
+  <!-- CHANGE ONLY THIS VALUE TO SCALE ENTIRE CHAIR! -->
+  <xacro:arg name="scale" default="1.0"/>
+  <xacro:property name="scale" value="$(arg scale)"/>
+
+  <!-- Base dimensions that will be scaled -->
+  <xacro:property name="base_seat_size" value="0.45"/>
+  <xacro:property name="base_seat_height" value="0.45"/>
+  <xacro:property name="base_seat_thickness" value="0.05"/>
+  <xacro:property name="base_backrest_width" value="0.45"/>
+  <xacro:property name="base_backrest_height" value="0.6"/>
+  <xacro:property name="base_backrest_thickness" value="0.05"/>
+  <xacro:property name="base_backrest_offset" value="-0.2"/>
+  <xacro:property name="base_backrest_center_height" value="0.75"/>
+  <xacro:property name="base_leg_radius" value="0.025"/>
+  <xacro:property name="base_leg_length" value="0.45"/>
+  <xacro:property name="base_leg_offset" value="0.175"/>
+  <xacro:property name="base_leg_center_height" value="0.225"/>
+  <xacro:property name="base_seat_mass" value="5.0"/>
+  <xacro:property name="base_backrest_mass" value="3.0"/>
+  <xacro:property name="base_leg_mass" value="1.0"/>
+
+  <!-- Calculated scaled dimensions -->
+  <xacro:property name="seat_size" value="${base_seat_size * scale}"/>
+  <xacro:property name="seat_height" value="${base_seat_height * scale}"/>
+  <xacro:property name="seat_thickness" value="${base_seat_thickness * scale}"/>
+  <xacro:property name="backrest_width" value="${base_backrest_width * scale}"/>
+  <xacro:property name="backrest_height" value="${base_backrest_height * scale}"/>
+  <xacro:property name="backrest_thickness" value="${base_backrest_thickness * scale}"/>
+  <xacro:property name="backrest_offset" value="${base_backrest_offset * scale}"/>
+  <xacro:property name="backrest_center_height" value="${base_backrest_center_height * scale}"/>
+  <xacro:property name="leg_radius" value="${base_leg_radius * scale}"/>
+  <xacro:property name="leg_length" value="${base_leg_length * scale}"/>
+  <xacro:property name="leg_offset" value="${base_leg_offset * scale}"/>
+  <xacro:property name="leg_center_height" value="${base_leg_center_height * scale}"/>
+  <xacro:property name="seat_mass" value="${base_seat_mass * scale * scale * scale}"/>
+  <xacro:property name="backrest_mass" value="${base_backrest_mass * scale * scale * scale}"/>
+  <xacro:property name="leg_mass" value="${base_leg_mass * scale * scale * scale}"/>
+
+  <!-- Chair Seat Link -->
+  <link name="seat">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <box size="${seat_size} ${seat_size} ${seat_thickness}"/>
+      </geometry>
+      <material name="wood">
+        <color rgba="0.6 0.4 0.2 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <box size="${seat_size} ${seat_size} ${seat_thickness}"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="${seat_mass}"/>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <inertia ixx="${0.083 * scale}" ixy="0.0" ixz="0.0"
+               iyy="${0.083 * scale}" iyz="0.0"
+               izz="${0.083 * scale}"/>
+    </inertial>
+  </link>
+
+  <!-- Chair Backrest Link -->
+  <link name="backrest">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <box size="${backrest_width} ${backrest_thickness} ${backrest_height}"/>
+      </geometry>
+      <material name="wood">
+        <color rgba="0.6 0.4 0.2 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <box size="${backrest_width} ${backrest_thickness} ${backrest_height}"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="${backrest_mass}"/>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <inertia ixx="${0.25 * scale}" ixy="0.0" ixz="0.0"
+               iyy="${0.05 * scale}" iyz="0.0"
+               izz="${0.25 * scale}"/>
+    </inertial>
+  </link>
+
+  <!-- Leg Macro for reusability -->
+  <xacro:macro name="leg" params="name x y">
+    <link name="${name}">
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <cylinder radius="${leg_radius}" length="${leg_length}"/>
+        </geometry>
+        <material name="dark_wood">
+          <color rgba="0.5 0.3 0.1 1"/>
+        </material>
+      </visual>
+      <collision>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <cylinder radius="${leg_radius}" length="${leg_length}"/>
+        </geometry>
+      </collision>
+      <inertial>
+        <mass value="${leg_mass}"/>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <inertia ixx="${0.015 * scale}" ixy="0.0" ixz="0.0"
+                 iyy="${0.015 * scale}" iyz="0.0"
+                 izz="${0.001 * scale}"/>
+      </inertial>
+    </link>
+    
+    <!-- Joint connecting leg to seat -->
+    <joint name="seat_to_${name}" type="fixed">
+      <parent link="seat"/>
+      <child link="${name}"/>
+      <origin xyz="${x} ${y} ${-seat_thickness/2 - leg_length/2}" rpy="0 0 0"/>
+    </joint>
+  </xacro:macro>
+
+  <!-- Create all four legs using the macro -->
+  <xacro:leg name="front_left_leg" x="${leg_offset}" y="${leg_offset}"/>
+  <xacro:leg name="front_right_leg" x="${-leg_offset}" y="${leg_offset}"/>
+  <xacro:leg name="back_left_leg" x="${leg_offset}" y="${-leg_offset}"/>
+  <xacro:leg name="back_right_leg" x="${-leg_offset}" y="${-leg_offset}"/>
+
+  <!-- Joint connecting backrest to seat -->
+  <joint name="seat_to_backrest" type="fixed">
+    <parent link="seat"/>
+    <child link="backrest"/>
+    <origin xyz="0 ${backrest_offset} ${seat_thickness/2 + backrest_height/2}" rpy="0 0 0"/>
+  </joint>
+
+  <!-- Base link (required by some systems) -->
+  <link name="base_link"/>
+  
+  <!-- Joint connecting base to seat -->
+  <joint name="base_to_seat" type="fixed">
+    <parent link="base_link"/>
+    <child link="seat"/>
+    <origin xyz="0 0 ${seat_height}" rpy="0 0 0"/>
+  </joint>
+
+</robot>
