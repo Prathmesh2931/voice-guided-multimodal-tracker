@@ -30,6 +30,7 @@ install(DIRECTORY src
 install(PROGRAMS
   src/voice_cmd_interface.py
   src/yolo_object_tracker.py
+  src/voice_ui_integration.py
   DESTINATION lib/${PROJECT_NAME}
 )
 
